@@ -67,24 +67,151 @@
 <!-- all the stuff goes in one file as is my tradition. Screw your model view controller and your neo-web branding enterprises. -->
 <script>
 
-	svg = d3.select("body").append("svg")
-		.attr("width",300).attr("height",120);
+	function Bayesquare(a,ba,bna){
+
+			this.scale = 200;
+
+			this.a = a;
+			this.ba = ba;
+			this.bna =bna;
+
+			this.na = 1-this.a;
+			this.nba = 1-this.ba;
+			this.nbna = 1-this.bna;
+
+			this.q1 = this.a * this.nba;
+			this.q2 = this.a * this.ba;
+			this.q3 = this.na * this.bna;
+			this.q4 = this.na * this.nbna;
+
+			this.b = this.q2 + this.q3;
+			this.nb = 1-this.b;
+
+			this.ab = this.q2 / this.b;
+			this.anb = this.q1 / this.nb;
+			
+			this.nab = 1-this.ab;
+			this.nanb = 1-this.anb;
+
+
+			this.svg = d3.select("body").append("svg")
+				.attr("width",430).attr("height",220);
+
+			this.svg.append("rect").attr("id","s1q1");
+			this.svg.append("rect").attr("id","s1q2");
+			this.svg.append("rect").attr("id","s1q3");
+			this.svg.append("rect").attr("id","s1q4");
+
+			this.svg.append("rect").attr("id","s2q1");
+			this.svg.append("rect").attr("id","s2q2");
+			this.svg.append("rect").attr("id","s2q3");
+			this.svg.append("rect").attr("id","s2q4");
+
+
+			this.svg.append("circle").attr("id","drag_a").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_ba").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_bna").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+
+			this.svg.append("circle").attr("id","drag_b").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_ab").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_anb").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+
+
+			this.updateView = ()=>{
+				// q1
+				this.svg.select("#s1q1")
+					.attr("x",10+this.ba*this.scale) .attr("y",10)
+					.attr("width",this.nba*this.scale) .attr("height",this.a*this.scale)
+					.attr("style","fill:rgb(153, 102, 51);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q2
+				this.svg.select("#s1q2")
+					.attr("x",10) .attr("y",10)
+					.attr("width",this.ba*this.scale) .attr("height",this.a*this.scale)
+					.attr("style","fill:rgb(213,105,22);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q3
+				this.svg.select("#s1q3")
+					.attr("x",10) .attr("y",10+this.a*this.scale)
+					.attr("width",this.bna*this.scale) .attr("height",this.na*this.scale)
+					.attr("style","fill:rgb(230,200,50);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q4
+				this.svg.select("#s1q4")
+					.attr("x",10+this.bna*this.scale) .attr("y",10+this.a*this.scale)
+					.attr("width",this.nbna*this.scale) .attr("height",this.na*this.scale)
+					.attr("style","fill:rgb(102, 153, 0);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+
+
+				// q1
+				this.svg.select("#s2q1")
+					.attr("x",220+this.b*this.scale) .attr("y",10)
+					.attr("width",this.nb*this.scale) .attr("height",this.anb*this.scale)
+					.attr("style","fill:rgb(153, 102, 51);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q2
+				this.svg.select("#s2q2")
+					.attr("x",220) .attr("y",10)
+					.attr("width",this.b*this.scale) .attr("height",this.ab*this.scale)
+					.attr("style","fill:rgb(213,105,22);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q3
+				this.svg.select("#s2q3")
+					.attr("x",220) .attr("y",10+this.ab*this.scale)
+					.attr("width",this.b*this.scale) .attr("height",this.nab*this.scale)
+					.attr("style","fill:rgb(230,200,50);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+				// q4
+				this.svg.select("#s2q4")
+					.attr("x",220+this.b*this.scale) .attr("y",10+this.anb*this.scale)
+					.attr("width",this.nb*this.scale) .attr("height",this.nanb*this.scale)
+					.attr("style","fill:rgb(102, 153, 0);stroke-width:3;stroke:rgb(255,255,255)")
+					;
+
+				// circle draggers
+				this.svg.select("#drag_a")
+					.attr("cx",110).attr("cy",10+this.a*this.scale);
+				this.svg.select("#drag_ba")
+					.attr("cx",10+this.ba*this.scale).attr("cy",10+this.a*this.scale/2);
+				this.svg.select("#drag_bna")
+					.attr("cx",10+this.bna*this.scale).attr("cy",10+(this.a+this.na/2)*this.scale);
+
+				this.svg.select("#drag_b")
+					.attr("cx",220+this.b*this.scale).attr("cy",110);
+				this.svg.select("#drag_ab")
+					.attr("cx",220+this.b*this.scale/2).attr("cy",10+this.ab*this.scale);
+				this.svg.select("#drag_anb")
+					.attr("cx",220+(this.b+this.nb/2)*this.scale).attr("cy",10+this.anb*this.scale);
+				};
+			this.updateView();
+		}
+
+	var bayesquare = new Bayesquare(0.75, 0.4, 0.8);
+	var bayesquare = new Bayesquare(0.1, 0.2, 0.3);
+	var bayesquare = new Bayesquare(0.01, 0.02, 0.03);
 
 
 	var dragHandler = d3.drag()
 		.on("drag", function () {
 
-	d3.select("#drag-a")
-	//.attr("cx", d3.event.x)
-		.attr("cy", d3.event.y);
+		d3.select("#drag-a")
+		//.attr("cx", d3.event.x)
+			.attr("cy", d3.event.y);
 
-	d3.select("#q1")
-		.attr("height",d3.event.y-50);
+		d3.select("#q1")
+			.attr("height",d3.event.y-50);
 
-	d3.select("#q3")
-		.attr("y",d3.event.y)
-		.attr("height",160+50-d3.event.y)
-		;
+		d3.select("#q3")
+			.attr("y",d3.event.y)
+			.attr("height",160+50-d3.event.y)
+			;
 
 	});
 
