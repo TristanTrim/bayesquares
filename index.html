@@ -31,8 +31,10 @@
 				this.b = this.q2 + this.q3;
 				this.nb = 1-this.b;
 
-				this.ab = this.q2 / this.b;
-				this.anb = this.q1 / this.nb;
+				if (this.b != 0)
+					this.ab = this.q2 / this.b;
+				if (this.nb != 0)
+					this.anb = this.q1 / this.nb;
 				
 				this.nab = 1-this.ab;
 				this.nanb = 1-this.anb;
@@ -53,8 +55,10 @@
 				this.a = this.q1 + this.q2;
 				this.na = 1-this.a;
 
-				this.ba = this.q2 / this.a;
-				this.bna = this.q3 / this.na;
+				if (this.a !=0)
+					this.ba = this.q2 / this.a;
+				if (this.na !=0)
+					this.bna = this.q3 / this.na;
 				
 				this.nba = 1-this.ba;
 				this.nbna = 1-this.bna;
