@@ -6,64 +6,6 @@
 
 <body>
 
-<div id = "svgcontainer">
-	<svg width = "600" height = "300">
-
-
-	<!-- the baysquare is 160 x 160 -->
-
-	<!-- q1 -->
-		<rect 
-			id="q1"
-			x = "110" y = "50"
-			width="100" height="120" 
-			style="fill:rgb(153, 102, 51);stroke-width:3;stroke:rgb(255,255,255)" />
-
-		<!-- q2 -->
-		<rect 
-			id="q2"
-			x = "50" y = "50"
-			width="60" height="120" 
-			style="fill:rgb(213,105,22);stroke-width:3;stroke:rgb(255,255,255)" />
-
-		<!-- q3 -->
-		<rect 
-			id="q3"
-			x = "50" y = "170"
-			width="140" height="40" 
-			style="fill:rgb(230,200,50);stroke-width:3;stroke:rgb(255,255,255)" />
-
-		<!-- q4 -->
-		<rect 
-			id="q4"
-			x = "190" y = "170"
-			width="20" height="40" 
-			style="fill:rgb(102, 153, 0);stroke-width:3;stroke:rgb(255,255,255)" />
-
-
-		<!-- a vs na -->
-		<circle 
-			id="drag-a"
-			cx="130" cy="170" r="5"
-			style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)" />
-		<!-- ba vs nba -->
-		<circle
-			id="drag-ba"
-			cx="110" cy="110" r="5"
-			style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)" />
-		<!-- bna vs nbna -->
-		<circle
-			id="drag-bna"
-			cx="190" cy="190" r="5"
-			style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)" />
-
-
-
-
-
-	</svg>
-</div>
-
 <!-- all the stuff goes in one file as is my tradition. Screw your model view controller and your neo-web branding enterprises. -->
 <script>
 
@@ -75,23 +17,48 @@
 			this.ba = ba;
 			this.bna =bna;
 
-			this.na = 1-this.a;
-			this.nba = 1-this.ba;
-			this.nbna = 1-this.bna;
+			this.calcFromA = ()=>{
 
-			this.q1 = this.a * this.nba;
-			this.q2 = this.a * this.ba;
-			this.q3 = this.na * this.bna;
-			this.q4 = this.na * this.nbna;
+				this.na = 1-this.a;
+				this.nba = 1-this.ba;
+				this.nbna = 1-this.bna;
 
-			this.b = this.q2 + this.q3;
-			this.nb = 1-this.b;
+				this.q1 = this.a * this.nba;
+				this.q2 = this.a * this.ba;
+				this.q3 = this.na * this.bna;
+				this.q4 = this.na * this.nbna;
 
-			this.ab = this.q2 / this.b;
-			this.anb = this.q1 / this.nb;
-			
-			this.nab = 1-this.ab;
-			this.nanb = 1-this.anb;
+				this.b = this.q2 + this.q3;
+				this.nb = 1-this.b;
+
+				this.ab = this.q2 / this.b;
+				this.anb = this.q1 / this.nb;
+				
+				this.nab = 1-this.ab;
+				this.nanb = 1-this.anb;
+				}
+			this.calcFromA();
+
+			this.calcFromB = ()=>{
+
+				this.nb = 1-this.b;
+				this.nab = 1-this.ab;
+				this.nanb = 1-this.anb;
+
+				this.q1 = this.nb * this.anb;
+				this.q2 = this.b * this.ab;
+				this.q3 = this.b * this.nab;
+				this.q4 = this.nb * this.nanb;
+
+				this.a = this.q1 + this.q2;
+				this.na = 1-this.a;
+
+				this.ba = this.q2 / this.a;
+				this.bna = this.q3 / this.na;
+				
+				this.nba = 1-this.ba;
+				this.nbna = 1-this.bna;
+				}
 
 
 			this.svg = d3.select("body").append("svg")
@@ -190,12 +157,64 @@
 				this.svg.select("#drag_anb")
 					.attr("cx",220+(this.b+this.nb/2)*this.scale).attr("cy",10+this.anb*this.scale);
 				};
+
+
+			var bs = this;
+
+			// draggers for givenA side
+			d3.drag().on("drag", function () {
+					bs.a += d3.event.dy/bs.scale;
+					if(bs.a<0)bs.a=0;
+					if(bs.a>1)bs.a=1;
+					bs.calcFromA();
+					bs.updateView();
+			})(this.svg.select("#drag_a"));
+			d3.drag().on("drag", function () {
+					bs.ba += d3.event.dx/bs.scale;
+					if(bs.ba<0)bs.ba=0;
+					if(bs.ba>1)bs.ba=1;
+					bs.calcFromA();
+					bs.updateView();
+			})(this.svg.select("#drag_ba"));
+			d3.drag().on("drag", function () {
+					bs.bna += d3.event.dx/bs.scale;
+					if(bs.bna<0)bs.bna=0;
+					if(bs.bna>1)bs.bna=1;
+					bs.calcFromA();
+					bs.updateView();
+			})(this.svg.select("#drag_bna"));
+
+			// draggers for givenB side
+			d3.drag().on("drag", function () {
+					bs.b += d3.event.dx/bs.scale;
+					if(bs.b<0)bs.b=0;
+					if(bs.b>1)bs.b=1;
+					bs.calcFromB();
+					bs.updateView();
+			})(this.svg.select("#drag_b"));
+			d3.drag().on("drag", function () {
+					bs.ab += d3.event.dy/bs.scale;
+					if(bs.ab<0)bs.ab=0;
+					if(bs.ab>1)bs.ab=1;
+					bs.calcFromB();
+					bs.updateView();
+			})(this.svg.select("#drag_ab"));
+			d3.drag().on("drag", function () {
+					bs.anb += d3.event.dy/bs.scale;
+					if(bs.anb<0)bs.anb=0;
+					if(bs.anb>1)bs.anb=1;
+					bs.calcFromB();
+					bs.updateView();
+			})(this.svg.select("#drag_anb"));
+
+
 			this.updateView();
+
 		}
 
 	var bayesquare = new Bayesquare(0.75, 0.4, 0.8);
-	var bayesquare = new Bayesquare(0.1, 0.2, 0.3);
-	var bayesquare = new Bayesquare(0.01, 0.02, 0.03);
+	//var bayesquare = new Bayesquare(0.1, 0.2, 0.3);
+	//var bayesquare = new Bayesquare(0.01, 0.02, 0.03);
 
 
 	var dragHandler = d3.drag()
