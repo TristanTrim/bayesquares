@@ -221,26 +221,6 @@
 	//var bayesquare = new Bayesquare(0.01, 0.02, 0.03);
 
 
-	var dragHandler = d3.drag()
-		.on("drag", function () {
-
-		d3.select("#drag-a")
-		//.attr("cx", d3.event.x)
-			.attr("cy", d3.event.y);
-
-		d3.select("#q1")
-			.attr("height",d3.event.y-50);
-
-		d3.select("#q3")
-			.attr("y",d3.event.y)
-			.attr("height",160+50-d3.event.y)
-			;
-
-	});
-
-	dragHandler(d3.selectAll("#drag-a"));
-
-
 </script>
 </body>
 </html>
