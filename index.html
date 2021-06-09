@@ -64,9 +64,10 @@
 				this.nbna = 1-this.bna;
 				}
 
+			// create svg components
 
 			this.svg = d3.select("body").append("svg")
-				.attr("width",430).attr("height",220);
+				.attr("width",530).attr("height",220);
 
 			this.svg.append("rect").attr("id","s1q1");
 			this.svg.append("rect").attr("id","s1q2");
@@ -92,6 +93,12 @@
 				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
 			this.svg.append("circle").attr("id","drag_anb").attr("r",5)
 				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+
+			this.svg.append("rect").attr("id","q1bar");
+			this.svg.append("rect").attr("id","q2bar");
+			this.svg.append("rect").attr("id","q3bar");
+			this.svg.append("rect").attr("id","q4bar");
+
 
 
 			this.updateView = ()=>{
@@ -160,6 +167,34 @@
 					.attr("cx",220+this.b*this.scale/2).attr("cy",10+this.ab*this.scale);
 				this.svg.select("#drag_anb")
 					.attr("cx",220+(this.b+this.nb/2)*this.scale).attr("cy",10+this.anb*this.scale);
+
+				// bar chart
+				// q1
+				this.svg.select("#q1bar")
+					.attr("x",440) .attr("y",10+(1-this.q1)*this.scale)
+					.attr("width",20) .attr("height",this.q1*this.scale)
+					.attr("style","fill:rgb(153, 102, 51);stroke-width:0;stroke:rgb(255,255,255)")
+					;
+				// q2
+				this.svg.select("#q2bar")
+					.attr("x",463) .attr("y",10+(1-this.q2)*this.scale)
+					.attr("width",20) .attr("height",this.q2*this.scale)
+					.attr("style","fill:rgb(213,105,22);stroke-width:0;stroke:rgb(255,255,255)")
+					;
+				// q3
+				this.svg.select("#q3bar")
+					.attr("x",486) .attr("y",10+(1-this.q3)*this.scale)
+					.attr("width",20) .attr("height",this.q3*this.scale)
+					.attr("style","fill:rgb(230,200,50);stroke-width:0;stroke:rgb(255,255,255)")
+					;
+				// q4
+				this.svg.select("#q4bar")
+					.attr("x",509) .attr("y",10+(1-this.q4)*this.scale)
+					.attr("width",20) .attr("height",this.q4*this.scale)
+					.attr("style","fill:rgb(102, 153, 0);stroke-width:0;stroke:rgb(255,255,255)")
+					;
+
+
 				};
 
 
