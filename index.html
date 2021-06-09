@@ -99,6 +99,15 @@
 			this.svg.append("rect").attr("id","q3bar");
 			this.svg.append("rect").attr("id","q4bar");
 
+			this.svg.append("circle").attr("id","drag_q1bar").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_q2bar").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_q3bar").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("circle").attr("id","drag_q4bar").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
+
 
 
 			this.updateView = ()=>{
@@ -193,6 +202,15 @@
 					.attr("width",20) .attr("height",this.q4*this.scale)
 					.attr("style","fill:rgb(102, 153, 0);stroke-width:0;stroke:rgb(255,255,255)")
 					;
+				// circle draggers for bar
+				this.svg.select("#drag_q1bar")
+					.attr("cx",450) .attr("cy",20+(1-this.q1)*this.scale)
+				this.svg.select("#drag_q2bar")
+					.attr("cx",473) .attr("cy",20+(1-this.q2)*this.scale)
+				this.svg.select("#drag_q3bar")
+					.attr("cx",496) .attr("cy",20+(1-this.q3)*this.scale)
+				this.svg.select("#drag_q4bar")
+					.attr("cx",519) .attr("cy",20+(1-this.q4)*this.scale)
 
 
 				};
