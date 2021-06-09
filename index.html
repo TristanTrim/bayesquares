@@ -63,11 +63,81 @@
 				this.nba = 1-this.ba;
 				this.nbna = 1-this.bna;
 				}
+			this.changeQ1 = (delta) =>{
+				let oldQ1 = this.q1;
+				this.q1 += delta;
+				if (this.q1>.999) this.q1=.999;
+				if (this.q1<0.001) this.q1=0.001;
+				if (oldQ1 != 1){
+					otherQRatio = (1-this.q1) / (1-oldQ1)
+					this.q2 *= otherQRatio;
+					this.q3 *= otherQRatio;
+					this.q4 *= otherQRatio;
+					}
+				this.calcFromQ();
+				};
+			this.changeQ2 = (delta) =>{
+				let oldQ2 = this.q2;
+				this.q2 += delta;
+				if (this.q2>.999) this.q2=.999;
+				if (this.q2<0.001) this.q2=0.001;
+				if (oldQ2 != 1){
+					otherQRatio = (1-this.q2) / (1-oldQ2)
+					this.q1 *= otherQRatio;
+					this.q3 *= otherQRatio;
+					this.q4 *= otherQRatio;
+					}
+				this.calcFromQ();
+				};
+			this.changeQ3 = (delta) =>{
+				let oldQ3 = this.q3;
+				this.q3 += delta;
+				if (this.q3>.999) this.q3=.999;
+				if (this.q3<0.001) this.q3=0.001;
+				if (oldQ3 != 1){
+					otherQRatio = (1-this.q3) / (1-oldQ3)
+					this.q2 *= otherQRatio;
+					this.q1 *= otherQRatio;
+					this.q4 *= otherQRatio;
+					}
+				this.calcFromQ();
+				};
+			this.changeQ4 = (delta) =>{
+				let oldQ4 = this.q4;
+				this.q4 += delta;
+				if (this.q4>.999) this.q4=.999;
+				if (this.q4<0.001) this.q4=0.001;
+				if (oldQ4 != 1){
+					otherQRatio = (1-this.q4) / (1-oldQ4)
+					this.q2 *= otherQRatio;
+					this.q3 *= otherQRatio;
+					this.q1 *= otherQRatio;
+					}
+				this.calcFromQ();
+				};
+			this.calcFromQ = ()=>{
+
+				this.a = this.q1 + this.q2;
+				this.b = this.q2 + this.q3;
+				this.na = 1-this.a;
+				this.nb = 1-this.b;
+
+				if (this.a !=0) this.ba = this.q2 / this.a;
+				if (this.na !=0) this.bna = this.q3 / this.na;
+				this.nba = 1-this.ba;
+				this.nbna = 1-this.bna;
+
+				if (this.b !=0) this.ab = this.q2 / this.b;
+				if (this.nb !=0) this.anb = this.q1 / this.nb;
+				this.nab = 1-this.ab;
+				this.nanb = 1-this.anb;
+				};
+
 
 			// create svg components
 
 			this.svg = d3.select("body").append("svg")
-				.attr("width",530).attr("height",220);
+				.attr("width",530).attr("height",250);
 
 			this.svg.append("rect").attr("id","s1q1");
 			this.svg.append("rect").attr("id","s1q2");
@@ -94,6 +164,16 @@
 			this.svg.append("circle").attr("id","drag_anb").attr("r",5)
 				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
 
+			// black outlines for bar draggers
+			this.svg.append("circle").attr("id","drag_q1bar_b").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:6;stroke:rgb(0,0,0)");
+			this.svg.append("circle").attr("id","drag_q2bar_b").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:6;stroke:rgb(0,0,0)");
+			this.svg.append("circle").attr("id","drag_q3bar_b").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:6;stroke:rgb(0,0,0)");
+			this.svg.append("circle").attr("id","drag_q4bar_b").attr("r",5)
+				.attr("style","fill:rgb(255,255,255);stroke-width:6;stroke:rgb(0,0,0)");
+			// bars
 			this.svg.append("rect").attr("id","q1bar");
 			this.svg.append("rect").attr("id","q2bar");
 			this.svg.append("rect").attr("id","q3bar");
@@ -212,6 +292,15 @@
 				this.svg.select("#drag_q4bar")
 					.attr("cx",519) .attr("cy",20+(1-this.q4)*this.scale)
 
+				this.svg.select("#drag_q1bar_b")
+					.attr("cx",450) .attr("cy",20+(1-this.q1)*this.scale)
+				this.svg.select("#drag_q2bar_b")
+					.attr("cx",473) .attr("cy",20+(1-this.q2)*this.scale)
+				this.svg.select("#drag_q3bar_b")
+					.attr("cx",496) .attr("cy",20+(1-this.q3)*this.scale)
+				this.svg.select("#drag_q4bar_b")
+					.attr("cx",519) .attr("cy",20+(1-this.q4)*this.scale)
+
 
 				};
 
@@ -221,22 +310,22 @@
 			// draggers for givenA side
 			d3.drag().on("drag", function () {
 					bs.a += d3.event.dy/bs.scale;
-					if(bs.a<0)bs.a=0;
-					if(bs.a>1)bs.a=1;
+					if(bs.a<0.001)bs.a=0.001;
+					if(bs.a>.999)bs.a=.999;
 					bs.calcFromA();
 					bs.updateView();
 			})(this.svg.select("#drag_a"));
 			d3.drag().on("drag", function () {
 					bs.ba += d3.event.dx/bs.scale;
-					if(bs.ba<0)bs.ba=0;
-					if(bs.ba>1)bs.ba=1;
+					if(bs.ba<0.001)bs.ba=0.001;
+					if(bs.ba>.999)bs.ba=.999;
 					bs.calcFromA();
 					bs.updateView();
 			})(this.svg.select("#drag_ba"));
 			d3.drag().on("drag", function () {
 					bs.bna += d3.event.dx/bs.scale;
-					if(bs.bna<0)bs.bna=0;
-					if(bs.bna>1)bs.bna=1;
+					if(bs.bna<0.001)bs.bna=0.001;
+					if(bs.bna>.999)bs.bna=.999;
 					bs.calcFromA();
 					bs.updateView();
 			})(this.svg.select("#drag_bna"));
@@ -244,25 +333,43 @@
 			// draggers for givenB side
 			d3.drag().on("drag", function () {
 					bs.b += d3.event.dx/bs.scale;
-					if(bs.b<0)bs.b=0;
-					if(bs.b>1)bs.b=1;
+					if(bs.b<0.001)bs.b=0.001;
+					if(bs.b>.999)bs.b=.999;
 					bs.calcFromB();
 					bs.updateView();
 			})(this.svg.select("#drag_b"));
 			d3.drag().on("drag", function () {
 					bs.ab += d3.event.dy/bs.scale;
-					if(bs.ab<0)bs.ab=0;
-					if(bs.ab>1)bs.ab=1;
+					if(bs.ab<0.001)bs.ab=0.001;
+					if(bs.ab>.999)bs.ab=.999;
 					bs.calcFromB();
 					bs.updateView();
 			})(this.svg.select("#drag_ab"));
 			d3.drag().on("drag", function () {
 					bs.anb += d3.event.dy/bs.scale;
-					if(bs.anb<0)bs.anb=0;
-					if(bs.anb>1)bs.anb=1;
+					if(bs.anb<0.001)bs.anb=0.001;
+					if(bs.anb>.999)bs.anb=.999;
 					bs.calcFromB();
 					bs.updateView();
 			})(this.svg.select("#drag_anb"));
+
+			// draggers for bars
+			d3.drag().on("drag", function () {
+					bs.changeQ1(-d3.event.dy/bs.scale);
+					bs.updateView();
+			})(this.svg.select("#drag_q1bar"));
+			d3.drag().on("drag", function () {
+					bs.changeQ2(-d3.event.dy/bs.scale);
+					bs.updateView();
+			})(this.svg.select("#drag_q2bar"));
+			d3.drag().on("drag", function () {
+					bs.changeQ3(-d3.event.dy/bs.scale);
+					bs.updateView();
+			})(this.svg.select("#drag_q3bar"));
+			d3.drag().on("drag", function () {
+					bs.changeQ4(-d3.event.dy/bs.scale);
+					bs.updateView();
+			})(this.svg.select("#drag_q4bar"));
 
 
 			this.updateView();
