@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang = "en">
 <head>
+
 <script src = "https://d3js.org/d3.v4.min.js"></script>
+
+<!-- Load the sankey.js function -->
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/sankey.js"></script>
+
 </head>
 
 <body>
@@ -137,7 +142,7 @@
 			// create svg components
 
 			this.svg = d3.select("body").append("svg")
-				.attr("width",530).attr("height",250);
+				.attr("width",530).attr("height",650);
 
 			this.svg.append("rect").attr("id","s1q1");
 			this.svg.append("rect").attr("id","s1q2");
@@ -188,6 +193,18 @@
 			this.svg.append("circle").attr("id","drag_q4bar").attr("r",5)
 				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
 
+
+			//  sankey
+			this.svg.append("path").attr("id","q1path").attr("d","M 10 230 C 40 230  70 230  100 230   L 100 270  C 60 270  30 270  10 270").attr("stroke","#000000");
+			this.svg.append("path").attr("id","q2path").attr("d","M 10 270 C 40 270  70 300  100 300   L 100 330  C 60 330  30 300  10 300").attr("stroke","#000000");
+
+
+
+
+
+			//////////////////////////////////////
+			///  Update view logics  /////////////
+			//////////////////////////////////////
 
 
 			this.updateView = ()=>{
@@ -374,12 +391,13 @@
 
 			this.updateView();
 
+
+
 		}
 
 	var bayesquare = new Bayesquare(0.75, 0.4, 0.8);
 	//var bayesquare = new Bayesquare(0.1, 0.2, 0.3);
 	//var bayesquare = new Bayesquare(0.01, 0.02, 0.03);
-
 
 </script>
 </body>
