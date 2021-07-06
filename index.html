@@ -14,6 +14,21 @@
 <!-- all the stuff goes in one file as is my tradition. Screw your model view controller and your neo-web branding enterprises. -->
 <script>
 
+	function sankPath(x1,y1,x2,y2,thick){
+			let width = x2 - x1;
+			return("M "+x1+" "+y1
+					+"  C  "+( x1+width/3 )+" "+y1
+					+"  "+( x2-width/3 )+" "+y2
+					+"  "+ x2 +" "+y2
+
+					+"  L "+x2+" "+(y2+thick)
+					
+					+"  C  "+(x2-width/3)+" "+(y2+thick)
+					+"  "+(x1+width/3)+" "+(y1+thick)
+					+"  "+ (x1) +" "+(y1+thick)
+					);
+		}
+
 	function Bayesquare(a,ba,bna){
 
 			this.scale = 200;
@@ -184,6 +199,7 @@
 			this.svg.append("rect").attr("id","q3bar");
 			this.svg.append("rect").attr("id","q4bar");
 
+			// white circle clickers for bars
 			this.svg.append("circle").attr("id","drag_q1bar").attr("r",5)
 				.attr("style","fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255)");
 			this.svg.append("circle").attr("id","drag_q2bar").attr("r",5)
@@ -195,8 +211,20 @@
 
 
 			//  sankey
-			this.svg.append("path").attr("id","q1path").attr("d","M 10 230 C 40 230  70 230  100 230   L 100 270  C 60 270  30 270  10 270").attr("stroke","#000000");
-			this.svg.append("path").attr("id","q2path").attr("d","M 10 270 C 40 270  70 300  100 300   L 100 330  C 60 330  30 300  10 300").attr("stroke","#000000");
+			this.svg.append("path").attr("id","q1sankey")
+				.attr("d",sankPath(10,230, 100,240, 30) )
+						//"M 10 230 C 40 230  70 230  100 230   L 100 270  C 60 270  30 270  10 270")
+					.attr("style","fill:rgb(153, 102, 51);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("path").attr("id","q3sankey")
+				.attr("d","M 10 270 C 40 270  70 300  100 300   L 100 330  C 60 330  30 300  10 300")
+					.attr("style","fill:rgb(230,200,50);stroke-width:3;stroke:rgb(255,255,255)");
+			       /// drawn out of order so q2 is on top of q3
+			this.svg.append("path").attr("id","q2sankey")
+				.attr("d","M 10 270 C 40 270  70 300  100 300   L 100 330  C 60 330  30 300  10 300")
+					.attr("style","fill:rgb(213,105,22);stroke-width:3;stroke:rgb(255,255,255)");
+			this.svg.append("path").attr("id","q4sankey")
+				.attr("d","M 10 270 C 40 270  70 300  100 300   L 100 330  C 60 330  30 300  10 300")
+					.attr("style","fill:rgb(102, 153, 0);stroke-width:3;stroke:rgb(255,255,255)");
 
 
 
@@ -208,6 +236,7 @@
 
 
 			this.updateView = ()=>{
+					// Square 1
 				// q1
 				this.svg.select("#s1q1")
 					.attr("x",10+this.ba*this.scale) .attr("y",10)
@@ -234,6 +263,7 @@
 					;
 
 
+					// Square 2
 				// q1
 				this.svg.select("#s2q1")
 					.attr("x",220+this.b*this.scale) .attr("y",10)
@@ -317,6 +347,36 @@
 					.attr("cx",496) .attr("cy",20+(1-this.q3)*this.scale)
 				this.svg.select("#drag_q4bar_b")
 					.attr("cx",519) .attr("cy",20+(1-this.q4)*this.scale)
+
+
+				// swanky sankey
+					let skq1 = 127*this.q1;
+					let skq2 = 127*this.q2;
+					let skq3 = 127*this.q3;
+					let skq4 = 127*this.q4;
+
+					let buf = 10;
+
+				this.svg.select("#q1sankey")
+					.attr("d",sankPath(
+							10,230+skq2, 
+							153,240+skq2+skq3+buf, 
+							skq1) );
+				this.svg.select("#q2sankey")
+					.attr("d",sankPath(
+							10,230, 
+							153,240, 
+							skq2) );
+				this.svg.select("#q3sankey")
+					.attr("d",sankPath(
+							10,230+skq1+skq2+buf, 
+							153,240+skq2, 
+							skq3) );
+				this.svg.select("#q4sankey")
+					.attr("d",sankPath(
+							10,230+skq1+skq2+skq3+buf, 
+							153,240+skq1+skq2+skq3+buf, 
+							skq4) );
 
 
 				};
